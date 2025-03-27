@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "183979120874",
+    "project_id": "whatchat-15169",
+    "storage_bucket": "whatchat-15169.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183979120874:android:700e389ece65a2d6c21f93",
+        "android_client_info": {
+          "package_name": "com.example.chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmEImu1PcmoVp9j_2SbTB-EnOejN3Gcco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
