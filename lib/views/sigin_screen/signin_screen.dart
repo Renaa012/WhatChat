@@ -15,9 +15,7 @@ class VerificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var controller = Get.put(AuthController());
-
 
     return SafeArea(
       child: Scaffold(
@@ -31,9 +29,18 @@ class VerificationScreen extends StatelessWidget {
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
-
+              // Form(
+              //   key: controller.formKey,
+              //   child: Column(
+              //     children: [
               // username
               TextFormField(
+                // validator: (value){
+                //   if(value!.isEmpty || value.length <6){
+                //     return " nhập lại username";
+                //   }
+                //   return null;
+                // },
                 controller: controller.usernameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -57,10 +64,17 @@ class VerificationScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               20.heightBox,
 
               // phone
               TextFormField(
+                // validator: (value){
+                //   if(value!.isEmpty || value.length <9){
+                //     return " nhập lại phone";
+                //   }
+                //   return null;
+                // },
                 controller: controller.phoneController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -77,8 +91,8 @@ class VerificationScreen extends StatelessWidget {
                   ),
                   alignLabelWithHint: true,
                   labelText: "phone number",
-                  prefixText: "+84 ",
-                  hintText: " 1234567890",
+                  prefixText: "+84",
+                  hintText: "1234567890",
                   labelStyle: TextStyle(
                     color: Vx.gray600,
                     fontWeight: FontWeight.bold,
@@ -89,57 +103,53 @@ class VerificationScreen extends StatelessWidget {
               otp.text.size(16).make(),
 
               // otp
-              Obx(()=>
-                Visibility(
+              Obx(
+                () => Visibility(
                   visible: controller.isOtpSent.value,
                   child: SizedBox(
                     height: 80,
                     child: Row(
-                      mainAxisAlignment:  MainAxisAlignment.spaceBetween,
-                      children: List.generate(6,  (index)=> SizedBox(
-                        width: 56,
-                        child: TextField(
-                          controller: controller.otpController[index],
-                          cursorColor: btnColor,
-                          onChanged: (value){
-                            if(value.length ==1 && index <=5){
-                              FocusScope.of(context).nextFocus();
-                            }else if(value.isEmpty && index >0){
-                              FocusScope.of(context).previousFocus();
-                            }
-                          },
-                          style: TextStyle(
-                            fontFamily: bold,
-                            color: btnColor,
-                          ),
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: bgbColor,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        6,
+                        (index) => SizedBox(
+                          width: 56,
+                          child: TextField(
+                            controller: controller.otpController[index],
+                            cursorColor: btnColor,
+                            onChanged: (value) {
+                              if (value.length == 1 && index <= 5) {
+                                FocusScope.of(context).nextFocus();
+                              } else if (value.isEmpty && index > 0) {
+                                FocusScope.of(context).previousFocus();
+                              }
+                            },
+                            style: TextStyle(fontFamily: bold, color: btnColor),
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: bgbColor),
                               ),
-
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(color: bgbColor),
+                              ),
+                              hintText: "*",
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: bgbColor)
-                            ),
-                            hintText: "*"
                           ),
                         ),
-                      )),
+                      ),
                     ),
                   ),
                 ),
               ),
 
-
               const Spacer(),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
-                  width: context.screenWidth ,
+                  width: context.screenWidth,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: blColor,
@@ -147,26 +157,30 @@ class VerificationScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                     ),
                     onPressed: () async {
-                      if( controller.isOtpSent.value == false){
+                      // if(controller.formKey.currentState!.validate()) {
+                      if (controller.isOtpSent.value == false) {
                         controller.isOtpSent.value = true;
                         await controller.sendOtp();
-                      }else{
+                      } else {
                         await controller.verifyOtp(context);
-
                       }
-                      controller.isOtpSent.value= true;
+                      controller.isOtpSent.value = true;
                       await controller.sendOtp();
 
                       // Get.to(
                       //   () => const HomeScreen(),
                       //   transition: Transition.downToUp,
                       // );
+                      // }
                     },
                     child: continueText.text.black.bold.size(20).make(),
                   ),
                 ),
               ),
               30.heightBox,
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),

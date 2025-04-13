@@ -25,7 +25,13 @@ Widget chatsComponent() {
                 ),
                 child: ListTile(
                   onTap: () {
-                    Get.to(() => const ChatScreen(), transition: Transition.downToUp);
+                    Get.to(() => const ChatScreen(), transition: Transition.downToUp,
+                      arguments:[
+                        "name Renaaa",
+                        'ID renaa012',
+                      ],
+                    );
+
                   },
                   leading: CircleAvatar(
                     radius: 25,

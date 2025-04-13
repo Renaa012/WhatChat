@@ -8,31 +8,34 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
   var usernameController = TextEditingController();
   var phoneController = TextEditingController();
-  var otpController = List.generate(6, (index)=> TextEditingController());
+  var otpController = List.generate(6, (index) => TextEditingController());
 
   var isOtpSent = false.obs;
-  //auth variable
-  late final PhoneVerificationCompleted phoneVerificationCompleted;
-  late final PhoneVerificationFailed phoneVerificationFailed;
+  var formKey = GlobalKey<FormState>();
+
+  // Auth variables
+  late PhoneVerificationCompleted phoneVerificationCompleted;
+  late PhoneVerificationFailed phoneVerificationFailed;
   late PhoneCodeSent phoneCodeSent;
-  String verificationID ='';
+  String verificationID = '';
 
+  // Gửi OTP
+  Future<void> sendOtp() async {
+    phoneVerificationCompleted = (PhoneAuthCredential credential) async {
+      await auth.signInWithCredential(credential);
+    };
 
-  //goi otp method
-  sendOtp()async{
-    phoneVerificationCompleted =(PhoneAuthCredential credential) async{
-      await auth.signInWithCredential(credential);};
-
-    phoneVerificationFailed =(FirebaseAuthException e ){
+    phoneVerificationFailed = (FirebaseAuthException e) {
       if (e.code == 'invalid-phone-number') {
         print('The provided phone number is not valid.');
       }
     };
 
-    phoneCodeSent =( String verficationId, int? resendToken){
-      verificationID =verficationId;
+    phoneCodeSent = (String verificationId, int? resendToken) {
+      verificationID = verificationId;
     };
-    try{
+
+    try {
       await auth.verifyPhoneNumber(
         phoneNumber: "+84${phoneController.text}",
         verificationCompleted: phoneVerificationCompleted,
@@ -40,38 +43,36 @@ class AuthController extends GetxController {
         codeSent: phoneCodeSent,
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
-    }catch(e){
-      print(e.toString());
+    } catch (e) {
+      print("Error sending OTP: ${e.toString()}");
     }
   }
 
-  verifyOtp(context)async{
-    String otp ="";
-    for( var i=0 ; i<otpController.length; i++){
-      otp += otpController[i].text;
-    }
-    try{
+  // Xác minh OTP
+  Future<void> verifyOtp(context) async {
+    String otp = otpController.map((controller) => controller.text).join();
+
+    try {
       PhoneAuthCredential phoneAuthCredential =
       PhoneAuthProvider.credential(verificationId: verificationID, smsCode: otp);
-      final User? user =(await auth.signInWithCredential(phoneAuthCredential)).user;
+      User? user = (await auth.signInWithCredential(phoneAuthCredential)).user;
 
-      if(user!=null){
-        DocumentReference store = FirebaseFirestore.instance.collection(collectionUser).doc(
-          user.uid);
+      if (user != null) {
+        DocumentReference store =
+        FirebaseFirestore.instance.collection(collectionUser).doc(user.uid);
         await store.set({
-        'id': user.uid,
-        'name': usernameController.text.toString(),
-        'phone': phoneController.text.toString(),
+          'id': user.uid,
+          'name': usernameController.text.trim(),
+          'phone': phoneController.text.trim(),
+          'about': '',
+          'image_url':'',
         }, SetOptions(merge: true));
-        
+
         VxToast.show(context, msg: loggedin);
-        Get.offAll(()=> const HomeScreen(), transition: Transition.downToUp);
+        Get.offAll(() => const HomeScreen(), transition: Transition.downToUp);
       }
-    }catch(e){
+    } catch (e) {
       VxToast.show(context, msg: logout);
     }
   }
-
-
-  
 }

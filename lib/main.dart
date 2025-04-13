@@ -1,7 +1,11 @@
 import 'package:chat/consts/colors.dart';
+import 'package:chat/consts/consts.dart';
 import 'package:chat/consts/images.dart';
 import 'package:chat/consts/strings.dart';
+import 'package:chat/views/chat_screen/chat.dart';
+import 'package:chat/views/home_screen/home_screen.dart';
 import 'package:chat/views/sigin_screen/signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +17,10 @@ import 'firebase_options.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.white,
@@ -25,15 +30,43 @@ main() async {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
+
+
+  @override
+  State<App> createState() => _AppState();
+}
+  class _AppState extends State<App>{
+  var isUser = false;
+  checkUser()async{
+    auth.authStateChanges().listen((User? user){
+      if(user == null && mounted){
+        setState(() {
+          isUser =false;
+        });
+      }else{
+        setState(() {
+          isUser = true;
+        });
+      }
+      print("user value í $isUser");
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkUser();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(fontFamily: "lato"),
       debugShowCheckedModeBanner: false,
-      home: const ChatApp(),
+      home: isUser ? const HomeScreen() : ChatApp(),
+      // home: const ChatApp(),
       title: appname,
     );
   }

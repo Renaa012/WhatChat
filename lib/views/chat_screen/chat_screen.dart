@@ -1,12 +1,20 @@
 import 'package:chat/consts/consts.dart';
+import 'package:chat/controller/chats_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:velocity_x/velocity_x.dart';
-
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  // final String? user;
+  const ChatScreen({Key? key, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    // init our chat controller
+    var controller = Get.put(ChatController());
+
+
     return Scaffold(
       backgroundColor: bgwColor.withOpacity(0.9),
       appBar: AppBar(
@@ -16,7 +24,8 @@ class ChatScreen extends StatelessWidget {
           padding: const EdgeInsets.only(left: 8.0),
           child: Row(
             children: [
-              const CircleAvatar(// Màu nền cho avatar
+              const CircleAvatar(
+                // Màu nền cho avatar
                 backgroundImage: AssetImage(ic_user), // Hình ảnh người dùng
               ),
               const SizedBox(width: 10),
@@ -24,9 +33,9 @@ class ChatScreen extends StatelessWidget {
                 // Sử dụng Expanded để chiếm không gian còn lại
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      "Username", // Thay thế bằng tên người dùng
+                      "${controller.friendname}", // Thay thế bằng tên người dùng
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -90,7 +99,7 @@ class ChatScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child:
-                                    "heloo   asdb   askdn  ooooooooooooooooo"
+                                    "heloo I AM A GOD I GOOOODA"
                                         .text
                                         .white
                                         .make(),
@@ -118,19 +127,21 @@ class ChatScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Row(
-            
             children: [
               Expanded(
                 child: Container(
                   height: 40, // Điều chỉnh chiều cao của TextFormField
-          
+
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: Colors.black12,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: TextFormField(
-                    style: const TextStyle(color: Colors.black, fontFamily: bold),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: bold,
+                    ),
                     cursorColor: Colors.black,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
@@ -153,8 +164,12 @@ class ChatScreen extends StatelessWidget {
                 ),
               ),
               10.widthBox,
-                 Icon(Icons.send, color: btnColor,),
-
+              GestureDetector(
+                onTap: (){
+                  controller.sendmessage(controller.messageController.text);
+                },
+                  child: const CircleAvatar(
+                  child: Icon(Icons.send, color: btnColor))),
             ],
           ),
         ),
